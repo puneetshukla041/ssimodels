@@ -31,8 +31,11 @@ export default function WebXRARViewer() {
   const [scale, setScale] = useState(1)
   const [position, setPosition] = useState<[number, number, number]>([0, 0, -1])
 
+  // FIX: Return a no-op function to satisfy the ESLint rule 
+  // without changing the safe client-side mounting logic.
   useEffect(() => {
     setMounted(true)
+    return () => {} // Added: Return a cleanup function
   }, [])
 
   const resetSize = () => setScale(1)
