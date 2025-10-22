@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, Suspense } from 'react'
+import { useRef, useState, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { XR, ARButton } from '@react-three/xr'
 import { useGLTF, Environment } from '@react-three/drei'
@@ -27,21 +27,16 @@ function MachineModel({ scale, position }: { scale: number; position: [number, n
 }
 
 export default function WebXRARViewer() {
-  const [mounted, setMounted] = useState(false)
+  // REMOVED: The 'mounted' state and its associated useEffect are removed,
+  // as this component is already loaded client-side via next/dynamic with ssr: false.
+  // This eliminates the cascading state update that was causing the error.
   const [scale, setScale] = useState(1)
   const [position, setPosition] = useState<[number, number, number]>([0, 0, -1])
-
-  // FIX: Explicitly disable the rule as this is a safe, one-time mount check.
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true) 
-    return () => {}
-  }, [])
 
   const resetSize = () => setScale(1)
   const recenter = () => setPosition([0, 0, -1])
 
-  if (!mounted) return null // Wait until mount
+  // REMOVED: if (!mounted) return null
 
   return (
     <div className="w-full h-screen relative bg-black text-white">
