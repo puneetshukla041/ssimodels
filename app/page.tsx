@@ -21,6 +21,8 @@ export default function HomePage() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const ua = navigator.userAgent.toLowerCase()
+      // FIX: Disable linter rule for this necessary, synchronous, one-time environment check
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsAndroid(ua.includes('android'))
 
       if (navigator.xr && navigator.xr.isSessionSupported) {

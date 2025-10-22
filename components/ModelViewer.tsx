@@ -17,24 +17,28 @@ function MachineModel({
   const gltf = useGLTF('/models/Machine 1.glb')
   const modelRef = useRef<THREE.Group>(null)
 
-  // Rotation
+  // All imperative modifications (rotation, scale, position) must happen inside useFrame.
   useFrame(() => {
-    if (rotating && modelRef.current) {
+    if (!modelRef.current) return
+
+    // Rotation
+    if (rotating) {
       modelRef.current.rotation.y += 0.01
     }
+
+    // Reset model to default scale & position
+    if (resetSignal) {
+      modelRef.current.scale.set(0.5, 0.5, 0.5)
+      modelRef.current.position.set(0, 0, 0)
+      modelRef.current.rotation.set(0, 0, 0)
+    }
+
+    // Move model in front of camera (Recenter)
+    // The previous error was here. It's now safely inside useFrame.
+    if (recenterSignal) {
+      modelRef.current.position.set(0, 0, 0)
+    }
   })
-
-  // Reset model to default scale & position
-  if (resetSignal && modelRef.current) {
-    modelRef.current.scale.set(0.5, 0.5, 0.5)
-    modelRef.current.position.set(0, 0, 0)
-    modelRef.current.rotation.set(0, 0, 0)
-  }
-
-  // Move model in front of camera
-  if (recenterSignal && modelRef.current) {
-    modelRef.current.position.set(0, 0, 0)
-  }
 
   return <primitive ref={modelRef} object={gltf.scene} />
 }
@@ -44,15 +48,17 @@ export default function ModelViewer() {
   const [resetTrigger, setResetTrigger] = useState(false)
   const [recenterTrigger, setRecenterTrigger] = useState(false)
 
-  // Reset triggers automatically off after 1 frame
+  // Reset triggers automatically off after 1 frame using requestAnimationFrame
   const triggerReset = () => {
     setResetTrigger(true)
-    setTimeout(() => setResetTrigger(false), 100)
+    // Use requestAnimationFrame for single-frame trigger reset
+    requestAnimationFrame(() => setResetTrigger(false)) 
   }
 
   const triggerRecenter = () => {
     setRecenterTrigger(true)
-    setTimeout(() => setRecenterTrigger(false), 100)
+    // Use requestAnimationFrame for single-frame trigger reset
+    requestAnimationFrame(() => setRecenterTrigger(false))
   }
 
   return (

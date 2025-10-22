@@ -31,11 +31,8 @@ export default function WebXRARViewer() {
   const [scale, setScale] = useState(1)
   const [position, setPosition] = useState<[number, number, number]>([0, 0, -1])
 
-  // FIX: Explicitly disable the ESLint rule for this line.
-  // This is the cleanest way to bypass the linter for a known safe pattern 
-  // (client-side mount check with an empty dependency array).
+  // FIX: Explicitly disable the rule as this is a safe, one-time mount check.
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true) 
     return () => {}
